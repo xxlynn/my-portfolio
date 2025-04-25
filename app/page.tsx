@@ -265,7 +265,7 @@ export default function Home() {
             <div className="snap-center shrink-0">
               <div className="w-[300px] bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1 group">
                 <div className="aspect-video relative bg-gradient-to-br from-green-50 to-gray-50">
-                  <a href="/english-agent-demo.mp4" target="_blank" className="block w-full h-full">
+                  <a href="https://www.bilibili.com/video/BV1dGL7zwEjz/" target="_blank" className="block w-full h-full">
                     <div className="absolute inset-0 flex items-center justify-center">
                       <Image
                         src="/project-preview-english.png"
@@ -291,7 +291,7 @@ export default function Home() {
             <div className="snap-center shrink-0">
               <div className="w-[300px] bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1 group">
                 <div className="aspect-video relative bg-gradient-to-br from-purple-50 to-gray-50">
-                  <a href="/coze-plugin-demo.mp4" target="_blank" className="block w-full h-full">
+                  <a href="https://www.bilibili.com/video/BV1RVL7zhEvs/" target="_blank" className="block w-full h-full">
                     <div className="absolute inset-0 flex items-center justify-center">
                       <Image
                         src="/project-preview-coze.png"
