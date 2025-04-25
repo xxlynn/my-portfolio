@@ -10,7 +10,7 @@ export default function Home() {
             <div className="mb-6 flex justify-center">
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
                 <Image
-                  src="/avatar.jpg"
+                  src="/avatar.JPG"
                   alt="雷秀秀的照片"
                   width={128}
                   height={128}
