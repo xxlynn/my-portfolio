@@ -211,7 +211,7 @@ export default function Home() {
         {/* 项目展示 */}
         <section className="mb-12 overflow-hidden">
           <h2 className="text-lg font-bold mb-6 flex items-center after:content-[&apos;&apos;] after:h-[1px] after:flex-1 after:ml-4 after:bg-gray-200">项目展示</h2>
-          <p className="text-sm text-gray-400 mb-4 text-center">← 向左滑动查看更多 →</p>
+          <p className="text-sm text-gray-400 mb-4 text-center">← 左右滑动，点击卡片查看详情 →</p>
           <div className="flex overflow-x-auto pb-6 gap-6 snap-x snap-mandatory">
             {/* 网易云音乐项目 */}
             <div className="snap-center shrink-0 first:pl-4 last:pr-4">
