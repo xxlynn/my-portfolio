@@ -198,7 +198,7 @@ export default function Home() {
                     </div>
                     <div>
                       <h4 className="text-sm font-medium text-gray-700 mb-2">用户调研</h4>
-                      <p className="text-sm text-gray-600">面对"双减"用户退费冲击，调研学而思、猿辅导等竞品产品功能，向产品提出优化内容库展示需求；设计问卷，调研用户最新需求，配合销售和辅导输出防退费方案</p>
+                      <p className="text-sm text-gray-600">面对&ldquo;双减&rdquo;用户退费冲击，调研学而思、猿辅导等竞品产品功能，向产品提出优化内容库展示需求；设计问卷，调研用户最新需求，配合销售和辅导输出防退费方案</p>
                     </div>
                   </div>
                 </div>
