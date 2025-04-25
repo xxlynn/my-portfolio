@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>网易云音乐 - 首页</title>
+    <link rel="stylesheet" href="common.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .home-container {
+            padding-bottom: 110px;
+            height: 100%;
+        }
+        
+        .home-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .home-header__search {
+            flex: 1;
+            margin: 0 10px;
+            height: 36px;
+            background-color: #f5f5f5;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            color: #999;
+        }
+        
+        .home-header__search i {
+            margin-right: 8px;
+        }
+        
+        .banner {
+            padding: 10px 15px;
+        }
+        
+        .banner img {
+            width: 100%;
+            border-radius: 10px;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .shortcut-menus {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+        }
+        
+        .shortcut-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .shortcut-menu__icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background-color: #f9efef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d33a31;
+            margin-bottom: 8px;
+        }
+        
+        .shortcut-menu__label {
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .section-title {
+            padding: 15px 15px 10px;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .section-title__more {
+            font-size: 13px;
+            color: #999;
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+        }
+        
+        .recommended-playlists {
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .playlist-item {
+            margin-bottom: 15px;
+        }
+        
+        .playlist-item__cover {
+            position: relative;
+            padding-top: 100%;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        
+        .playlist-item__cover img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .playlist-item__play-count {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 11px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 2px 5px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .playlist-item__play-count i {
+            width: 12px;
+            height: 12px;
+            margin-right: 2px;
+        }
+        
+        .playlist-item__name {
+            font-size: 13px;
+            line-height: 1.3;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .new-songs {
+            padding: 0 15px;
+        }
+        
+        .daily-recommend {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(to right, #ff9478, #d33a31);
+            padding: 15px;
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .daily-recommend__icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .daily-recommend__text {
+            flex: 1;
+        }
+        
+        .daily-recommend__title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .daily-recommend__desc {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        
+        .mini-player {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.05);
+            z-index: 80;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .mini-player__cover {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-right: 12px;
+        }
+        
+        .mini-player__cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .mini-player__info {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .mini-player__title {
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+        
+        .mini-player__artist {
+            font-size: 12px;
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .mini-player__controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #f2f2f2;
+            border-radius: 20px;
+            padding: 8px 15px;
+            margin-bottom: 20px;
+        }
+        
+        .search-bar__icon {
+            margin-right: 8px;
+            color: #888;
+        }
+        
+        .search-bar__text {
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="status-bar__time">9:41</div>
+            <div class="status-bar__icons">
+                <i data-lucide="signal-medium"></i>
+                <i data-lucide="wifi"></i>
+                <i data-lucide="battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 首页内容 -->
+        <div class="app-container">
+            <div class="home-container">
+                <!-- 头部搜索栏 -->
+                <div class="home-header">
+                    <i data-lucide="menu" style="width:24px;height:24px;"></i>
+                    <div class="home-header__search">
+                        <i data-lucide="search" style="width:16px;height:16px;"></i>
+                        <span>搜索音乐、歌手、歌词</span>
+                    </div>
+                    <i data-lucide="mic" style="width:24px;height:24px;"></i>
+                </div>
+                
+                <!-- 轮播图 -->
+                <div class="banner">
+                    <img src="https://p1.music.126.net/uXbDB_NsXUGnMxL8Z8RFnA==/109951166710955332.jpg" alt="Banner">
+                </div>
+                
+                <!-- 快捷菜单 -->
+                <div class="shortcut-menus">
+                    <div class="shortcut-menu">
+                        <div class="shortcut-menu__icon">
+                            <i data-lucide="calendar" style="width:24px;height:24px;"></i>
+                        </div>
+                        <div class="shortcut-menu__label">每日推荐</div>
+                    </div>
+                    <div class="shortcut-menu">
+                        <div class="shortcut-menu__icon">
+                            <i data-lucide="radio" style="width:24px;height:24px;"></i>
+                        </div>
+                        <div class="shortcut-menu__label">私人FM</div>
+                    </div>
+                    <div class="shortcut-menu">
+                        <div class="shortcut-menu__icon">
+                            <i data-lucide="list-music" style="width:24px;height:24px;"></i>
+                        </div>
+                        <div class="shortcut-menu__label">歌单</div>
+                    </div>
+                    <div class="shortcut-menu">
+                        <div class="shortcut-menu__icon">
+                            <i data-lucide="bar-chart-2" style="width:24px;height:24px;"></i>
+                        </div>
+                        <div class="shortcut-menu__label">排行榜</div>
+                    </div>
+                </div>
+                
+                <!-- 推荐歌单 -->
+                <div class="section-title">
+                    <div>推荐歌单</div>
+                    <div class="section-title__more">
+                        更多
+                        <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+                    </div>
+                </div>
+                
+                <div class="recommended-playlists">
+                    <div class="playlist-item">
+                        <div class="playlist-item__cover">
+                            <img src="https://p1.music.126.net/sPp7C6jxVJyRVkE1vIhxhw==/109951164459621658.jpg" alt="歌单封面">
+                            <div class="playlist-item__play-count">
+                                <i data-lucide="play"></i>
+                                245万
+                            </div>
+                        </div>
+                        <div class="playlist-item__name">这些歌曲治愈了无数人的心灵</div>
+                    </div>
+                    <div class="playlist-item">
+                        <div class="playlist-item__cover">
+                            <img src="https://p1.music.126.net/VMfz_Vw0r2UwAQpQ-Y9qbg==/109951164664581252.jpg" alt="歌单封面">
+                            <div class="playlist-item__play-count">
+                                <i data-lucide="play"></i>
+                                135万
+                            </div>
+                        </div>
+                        <div class="playlist-item__name">助眠轻音乐，入睡必备</div>
+                    </div>
+                    <div class="playlist-item">
+                        <div class="playlist-item__cover">
+                            <img src="https://p1.music.126.net/QIMJuES0HPjr3MrX5ujUFw==/109951165665865968.jpg" alt="歌单封面">
+                            <div class="playlist-item__play-count">
+                                <i data-lucide="play"></i>
+                                89万
+                            </div>
+                        </div>
+                        <div class="playlist-item__name">2023年度热门流行歌曲精选</div>
+                    </div>
+                </div>
+                
+                <!-- 新歌新碟 -->
+                <div class="section-title">
+                    <div>新歌新碟</div>
+                    <div class="section-title__more">
+                        更多
+                        <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+                    </div>
+                </div>
+                
+                <div class="new-songs">
+                    <div class="song-item">
+                        <div class="song-item__cover">
+                            <img src="https://p1.music.126.net/CLo7eTuce78jJaHXSmU0IA==/109951168528421983.jpg" alt="歌曲封面">
+                        </div>
+                        <div class="song-item__info">
+                            <div class="song-item__title">意外</div>
+                            <div class="song-item__artist">薛之谦</div>
+                        </div>
+                        <div class="song-item__action">
+                            <i data-lucide="play" style="color:#999;"></i>
+                        </div>
+                    </div>
+                    <div class="song-item">
+                        <div class="song-item__cover">
+                            <img src="https://p1.music.126.net/yMrBHMW8m0oYzGYbWjqZ4w==/109951168482262652.jpg" alt="歌曲封面">
+                        </div>
+                        <div class="song-item__info">
+                            <div class="song-item__title">直到遇见你</div>
+                            <div class="song-item__artist">刘大壮</div>
+                        </div>
+                        <div class="song-item__action">
+                            <i data-lucide="play" style="color:#999;"></i>
+                        </div>
+                    </div>
+                    <div class="song-item">
+                        <div class="song-item__cover">
+                            <img src="https://p1.music.126.net/Cvz4EeFRQnxA-PGHlNgDWQ==/109951168288031540.jpg" alt="歌曲封面">
+                        </div>
+                        <div class="song-item__info">
+                            <div class="song-item__title">如果突然想起我</div>
+                            <div class="song-item__artist">张国荣</div>
+                        </div>
+                        <div class="song-item__action">
+                            <i data-lucide="play" style="color:#999;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mini播放器 -->
+        <div class="mini-player">
+            <div class="mini-player__cover">
+                <img src="https://p1.music.126.net/CLo7eTuce78jJaHXSmU0IA==/109951168528421983.jpg" alt="歌曲封面">
+            </div>
+            <div class="mini-player__info">
+                <div class="mini-player__title">意外</div>
+                <div class="mini-player__artist">薛之谦</div>
+            </div>
+            <div class="mini-player__controls">
+                <div class="mini-player__btn">
+                    <i data-lucide="skip-back"></i>
+                </div>
+                <div class="mini-player__btn">
+                    <i data-lucide="play"></i>
+                </div>
+                <div class="mini-player__btn">
+                    <i data-lucide="skip-forward"></i>
+                </div>
+                <div class="mini-player__btn">
+                    <i data-lucide="list"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航栏 -->
+        <div class="nav-bar">
+            <div class="nav-item active">
+                <i data-lucide="home" class="nav-item__icon"></i>
+                <div class="nav-item__text">首页</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href='playlist.html'">
+                <i data-lucide="layers" class="nav-item__icon"></i>
+                <div class="nav-item__text">歌单</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href='search.html'">
+                <i data-lucide="search" class="nav-item__icon"></i>
+                <div class="nav-item__text">搜索</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href='profile.html'">
+                <i data-lucide="user" class="nav-item__icon"></i>
+                <div class="nav-item__text">我的</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 初始化Lucide图标
+        lucide.createIcons();
+        
+        // 状态栏时间更新
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.querySelector('.status-bar__time').textContent = `${hours}:${minutes}`;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 60000);
+        
+        // 点击mini播放器跳转到播放页面
+        document.querySelector('.mini-player').addEventListener('click', function() {
+            window.location.href = 'player.html';
+        });
+    </script>
+</body>
+</html> 

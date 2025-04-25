@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网易云音乐 - 搜索</title>
+    <link rel="stylesheet" href="common.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        .search-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .search-input {
+            flex: 1;
+            position: relative;
+            margin-right: 15px;
+        }
+        
+        .search-input__field {
+            width: 100%;
+            height: 40px;
+            border-radius: 20px;
+            border: none;
+            background-color: #f5f5f5;
+            padding: 0 40px 0 15px;
+            font-size: 15px;
+            outline: none;
+        }
+        
+        .search-input__icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+        
+        .search-input__clear {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            background: #ddd;
+            border-radius: 50%;
+            padding: 2px;
+            display: none;
+        }
+        
+        .search-input__clear.show {
+            display: block;
+        }
+        
+        .search-cancel {
+            font-size: 15px;
+            color: #333;
+            white-space: nowrap;
+        }
+        
+        .search-tabs {
+            display: flex;
+            background-color: #fff;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 10px;
+        }
+        
+        .search-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 15px;
+            color: #666;
+            position: relative;
+        }
+        
+        .search-tab.active {
+            color: #d33a31;
+            font-weight: 500;
+        }
+        
+        .search-tab.active:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 2px;
+            background-color: #d33a31;
+        }
+        
+        .search-content {
+            padding: 15px;
+        }
+        
+        .search-section {
+            margin-bottom: 20px;
+        }
+        
+        .search-section__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .search-section__title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .search-section__action {
+            color: #888;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .hot-searches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .hot-search-item {
+            background-color: #f7f7f7;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .hot-search-item--hot {
+            color: #d33a31;
+        }
+        
+        .search-history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .search-history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-history-item__text {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            color: #333;
+        }
+        
+        .search-history-item__icon {
+            margin-right: 10px;
+            color: #999;
+        }
+        
+        .search-history-item__delete {
+            color: #999;
+        }
+        
+        .search-results {
+            display: none;
+        }
+        
+        .search-results.show {
+            display: block;
+        }
+        
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-result-item__icon {
+            margin-right: 12px;
+            color: #999;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .search-result-item__info {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .search-result-item__title {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .search-result-item__subtitle {
+            font-size: 12px;
+            color: #999;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .search-suggestion {
+            display: none;
+        }
+        
+        .search-suggestion.show {
+            display: block;
+        }
+        
+        .search-suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .search-suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .highlight {
+            color: #d33a31;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="status-bar__time">9:41</div>
+            <div class="status-bar__icons">
+                <i data-lucide="signal-medium"></i>
+                <i data-lucide="wifi"></i>
+                <i data-lucide="battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 应用内容 -->
+        <div class="app-container">
+            <!-- 搜索头部 -->
+            <div class="search-header">
+                <div class="search-input">
+                    <input type="text" class="search-input__field" placeholder="搜索音乐、歌词、歌手" id="searchInput">
+                    <i data-lucide="search" class="search-input__icon" id="searchIcon"></i>
+                    <i data-lucide="x" class="search-input__clear" id="clearIcon"></i>
+                </div>
+                <div class="search-cancel" onclick="history.back()">取消</div>
+            </div>
+            
+            <!-- 搜索内容区域 -->
+            <div class="content">
+                <!-- 默认搜索页面 -->
+                <div id="defaultSearchPage">
+                    <!-- 热门搜索 -->
+                    <div class="search-section">
+                        <div class="search-section__header">
+                            <div class="search-section__title">热搜榜</div>
+                        </div>
+                        <div class="hot-searches">
+                            <div class="hot-search-item hot-search-item--hot">起风了</div>
+                            <div class="hot-search-item">雪落下的声音</div>
+                            <div class="hot-search-item">像风一样</div>
+                            <div class="hot-search-item">花海</div>
+                            <div class="hot-search-item">年少有为</div>
+                            <div class="hot-search-item">可惜没如果</div>
+                            <div class="hot-search-item">晴天</div>
+                            <div class="hot-search-item">温柔</div>
+                            <div class="hot-search-item">不能说的秘密</div>
+                            <div class="hot-search-item">小城夏天</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 搜索历史 -->
+                    <div class="search-section">
+                        <div class="search-section__header">
+                            <div class="search-section__title">搜索历史</div>
+                            <div class="search-section__action">
+                                <i data-lucide="trash-2" style="width: 16px; height: 16px; margin-right: 4px;"></i>
+                                清空
+                            </div>
+                        </div>
+                        <div class="search-history">
+                            <div class="search-history-item">
+                                <div class="search-history-item__text">
+                                    <i data-lucide="clock" class="search-history-item__icon"></i>
+                                    周杰伦
+                                </div>
+                                <i data-lucide="x" class="search-history-item__delete"></i>
+                            </div>
+                            <div class="search-history-item">
+                                <div class="search-history-item__text">
+                                    <i data-lucide="clock" class="search-history-item__icon"></i>
+                                    林俊杰
+                                </div>
+                                <i data-lucide="x" class="search-history-item__delete"></i>
+                            </div>
+                            <div class="search-history-item">
+                                <div class="search-history-item__text">
+                                    <i data-lucide="clock" class="search-history-item__icon"></i>
+                                    薛之谦
+                                </div>
+                                <i data-lucide="x" class="search-history-item__delete"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 搜索联想建议 -->
+                <div id="searchSuggestion" class="search-suggestion">
+                    <div class="search-suggestion-item">
+                        <i data-lucide="search" class="search-result-item__icon"></i>
+                        <div class="search-result-item__info">
+                            <div class="search-result-item__title">搜索"<span class="highlight">起风</span>了"</div>
+                        </div>
+                    </div>
+                    <div class="search-suggestion-item">
+                        <i data-lucide="music" class="search-result-item__icon"></i>
+                        <div class="search-result-item__info">
+                            <div class="search-result-item__title"><span class="highlight">起风</span>了</div>
+                            <div class="search-result-item__subtitle">买辣椒也用券</div>
+                        </div>
+                    </div>
+                    <div class="search-suggestion-item">
+                        <i data-lucide="music" class="search-result-item__icon"></i>
+                        <div class="search-result-item__info">
+                            <div class="search-result-item__title"><span class="highlight">起风</span>了</div>
+                            <div class="search-result-item__subtitle">周深</div>
+                        </div>
+                    </div>
+                    <div class="search-suggestion-item">
+                        <i data-lucide="music" class="search-result-item__icon"></i>
+                        <div class="search-result-item__info">
+                            <div class="search-result-item__title"><span class="highlight">起风</span>了</div>
+                            <div class="search-result-item__subtitle">吴青峰</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 搜索结果 -->
+                <div id="searchResults" class="search-results">
+                    <!-- 搜索结果标签页 -->
+                    <div class="search-tabs">
+                        <div class="search-tab active">综合</div>
+                        <div class="search-tab">单曲</div>
+                        <div class="search-tab">歌手</div>
+                        <div class="search-tab">专辑</div>
+                        <div class="search-tab">歌单</div>
+                    </div>
+                    
+                    <!-- 搜索结果内容 -->
+                    <div class="search-content">
+                        <div class="search-result-item" onclick="window.location.href='player.html'">
+                            <i data-lucide="music" class="search-result-item__icon"></i>
+                            <div class="search-result-item__info">
+                                <div class="search-result-item__title">起风了</div>
+                                <div class="search-result-item__subtitle">买辣椒也用券 - 电视剧《加油，你是最棒的》推广曲</div>
+                            </div>
+                        </div>
+                        <div class="search-result-item" onclick="window.location.href='player.html'">
+                            <i data-lucide="music" class="search-result-item__icon"></i>
+                            <div class="search-result-item__info">
+                                <div class="search-result-item__title">起风了</div>
+                                <div class="search-result-item__subtitle">周深 - 起风了</div>
+                            </div>
+                        </div>
+                        <div class="search-result-item" onclick="window.location.href='player.html'">
+                            <i data-lucide="music" class="search-result-item__icon"></i>
+                            <div class="search-result-item__info">
+                                <div class="search-result-item__title">起风了</div>
+                                <div class="search-result-item__subtitle">吴青峰 - 起风了</div>
+                            </div>
+                        </div>
+                        <div class="search-result-item" onclick="window.location.href='player.html'">
+                            <i data-lucide="user" class="search-result-item__icon"></i>
+                            <div class="search-result-item__info">
+                                <div class="search-result-item__title">买辣椒也用券</div>
+                                <div class="search-result-item__subtitle">歌手</div>
+                            </div>
+                        </div>
+                        <div class="search-result-item" onclick="window.location.href='playlist.html'">
+                            <i data-lucide="disc" class="search-result-item__icon"></i>
+                            <div class="search-result-item__info">
+                                <div class="search-result-item__title">起风了</div>
+                                <div class="search-result-item__subtitle">专辑 · 买辣椒也用券</div>
+                            </div>
+                        </div>
+                        <div class="search-result-item" onclick="window.location.href='playlist.html'">
+                            <i data-lucide="list" class="search-result-item__icon"></i>
+                            <div class="search-result-item__info">
+                                <div class="search-result-item__title">「起风了」热门翻唱合集</div>
+                                <div class="search-result-item__subtitle">歌单 · 流行音乐人</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部导航栏 -->
+            <div class="nav-bar">
+                <div class="nav-item" onclick="window.location.href='home.html'">
+                    <i data-lucide="home" class="nav-item__icon"></i>
+                    <div class="nav-item__text">首页</div>
+                </div>
+                <div class="nav-item" onclick="window.location.href='playlist.html'">
+                    <i data-lucide="layers" class="nav-item__icon"></i>
+                    <div class="nav-item__text">歌单</div>
+                </div>
+                <div class="nav-item active">
+                    <i data-lucide="search" class="nav-item__icon"></i>
+                    <div class="nav-item__text">搜索</div>
+                </div>
+                <div class="nav-item" onclick="window.location.href='profile.html'">
+                    <i data-lucide="user" class="nav-item__icon"></i>
+                    <div class="nav-item__text">我的</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 初始化Lucide图标
+        lucide.createIcons();
+        
+        // 状态栏时间更新
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.querySelector('.status-bar__time').textContent = `${hours}:${minutes}`;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 60000);
+        
+        // 搜索功能
+        const searchInput = document.getElementById('searchInput');
+        const clearIcon = document.getElementById('clearIcon');
+        const defaultSearchPage = document.getElementById('defaultSearchPage');
+        const searchSuggestion = document.getElementById('searchSuggestion');
+        const searchResults = document.getElementById('searchResults');
+        const hotSearchItems = document.querySelectorAll('.hot-search-item');
+        
+        // 搜索输入逻辑
+        searchInput.addEventListener('input', (e) => {
+            const inputValue = e.target.value.trim();
+            
+            if (inputValue) {
+                clearIcon.classList.add('show');
+                defaultSearchPage.style.display = 'none';
+                
+                if (inputValue === '起风了') {
+                    searchSuggestion.classList.remove('show');
+                    searchResults.classList.add('show');
+                } else {
+                    searchSuggestion.classList.add('show');
+                    searchResults.classList.remove('show');
+                }
+            } else {
+                clearIcon.classList.remove('show');
+                defaultSearchPage.style.display = 'block';
+                searchSuggestion.classList.remove('show');
+                searchResults.classList.remove('show');
+            }
+        });
+        
+        // 清空搜索
+        clearIcon.addEventListener('click', () => {
+            searchInput.value = '';
+            clearIcon.classList.remove('show');
+            defaultSearchPage.style.display = 'block';
+            searchSuggestion.classList.remove('show');
+            searchResults.classList.remove('show');
+        });
+        
+        // 点击热搜条目
+        hotSearchItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const keyword = item.textContent;
+                searchInput.value = keyword;
+                
+                // 触发搜索
+                if (keyword === '起风了') {
+                    defaultSearchPage.style.display = 'none';
+                    searchSuggestion.classList.remove('show');
+                    searchResults.classList.add('show');
+                    clearIcon.classList.add('show');
+                }
+            });
+        });
+        
+        // 点击搜索建议
+        const searchSuggestionItems = document.querySelectorAll('.search-suggestion-item');
+        searchSuggestionItems.forEach(item => {
+            item.addEventListener('click', () => {
+                searchInput.value = '起风了';
+                defaultSearchPage.style.display = 'none';
+                searchSuggestion.classList.remove('show');
+                searchResults.classList.add('show');
+                clearIcon.classList.add('show');
+            });
+        });
+        
+        // 搜索标签页切换
+        const searchTabs = document.querySelectorAll('.search-tab');
+        searchTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                searchTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html> 

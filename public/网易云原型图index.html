@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网易云音乐App设计</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            height: 100%;
+            overflow: auto;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #333;
+            text-align: center;
+        }
+        .pages {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 40px;
+        }
+        .page {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .page-title-container {
+            background: #d33a31;
+            color: white;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .page-title {
+            flex: 1;
+        }
+        .open-button {
+            background-color: white;
+            color: #d33a31;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+        .open-button:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-1px);
+        }
+        .page-frame {
+            height: 880px;
+            border: none;
+            width: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>网易云音乐App设计</h1>
+        
+        <div class="pages">
+            <div class="page">
+                <div class="page-title-container">
+                    <div class="page-title">首页</div>
+                    <button class="open-button" onclick="window.open('home.html', '_blank')">打开页面</button>
+                </div>
+                <iframe src="home.html" class="page-frame"></iframe>
+            </div>
+            
+            <div class="page">
+                <div class="page-title-container">
+                    <div class="page-title">播放页面</div>
+                    <button class="open-button" onclick="window.open('player.html', '_blank')">打开页面</button>
+                </div>
+                <iframe src="player.html" class="page-frame"></iframe>
+            </div>
+            
+            <div class="page">
+                <div class="page-title-container">
+                    <div class="page-title">搜索页面</div>
+                    <button class="open-button" onclick="window.open('search.html', '_blank')">打开页面</button>
+                </div>
+                <iframe src="search.html" class="page-frame"></iframe>
+            </div>
+            
+            <div class="page">
+                <div class="page-title-container">
+                    <div class="page-title">个人中心</div>
+                    <button class="open-button" onclick="window.open('profile.html', '_blank')">打开页面</button>
+                </div>
+                <iframe src="profile.html" class="page-frame"></iframe>
+            </div>
+            
+            <div class="page">
+                <div class="page-title-container">
+                    <div class="page-title">歌单详情</div>
+                    <button class="open-button" onclick="window.open('playlist.html', '_blank')">打开页面</button>
+                </div>
+                <iframe src="playlist.html" class="page-frame"></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>网易云音乐 - 播放页面</title>
+    <link rel="stylesheet" href="common.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        body {
+            background-color: #ffffff; /* 更改为白色背景 */
+            color: white;
+            overflow-x: hidden; /* 防止横向溢出 */
+        }
+        
+        .player-page {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* 防止内容溢出 */
+            max-width: 100vw; /* 限制最大宽度为视口宽度 */
+            background: linear-gradient(to bottom, #d33a31 0%, #6d1d18 40%, #171818 100%);
+            border-radius: 50px 50px 0 0; /* 只保留顶部圆角，底部与屏幕边缘对齐 */
+            padding-bottom: 0; /* 移除底部padding */
+        }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 15px;
+            background-color: transparent;
+            color: white;
+            width: 100%;
+            overflow: hidden; /* 确保状态栏内容不溢出 */
+        }
+        
+        .status-bar__time {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .status-bar__icons {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* 增加图标之间的间距 */
+        }
+        
+        .status-bar__icons svg {
+            color: white;
+            width: 16px;
+            height: 16px;
+            max-width: 16px; /* 确保图标不会超过设定尺寸 */
+            max-height: 16px;
+            flex-shrink: 0; /* 防止图标被压缩 */
+        }
+        
+        .player-header {
+            display: flex;
+            justify-content: space-between; /* 在水平方向分布元素 */
+            align-items: center;
+            padding: 10px 15px;
+            width: 100%;
+            overflow: hidden; /* 防止内容溢出 */
+        }
+        
+        .player-header__action {
+            width: 24px;
+            height: 24px;
+            color: rgba(255, 255, 255, 0.8);
+            flex-shrink: 0; /* 防止被压缩 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .player-header__action svg {
+            width: 100%;
+            height: 100%;
+            max-width: 24px; /* 限制最大宽度 */
+            max-height: 24px;
+        }
+        
+        .player-header__info {
+            text-align: center;
+            flex: 1;
+            overflow: hidden; /* 防止内容溢出 */
+            padding: 0 10px; /* 两侧留出间距 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .player-header__title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            white-space: nowrap; /* 防止文字换行 */
+            overflow: hidden; /* 隐藏溢出部分 */
+            text-overflow: ellipsis; /* 显示省略号 */
+        }
+        
+        .player-header__mode {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .player-header__mode-icon {
+            margin-left: 5px;
+        }
+        
+        .player-cover {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px; /* 减少上下padding */
+            overflow: hidden;
+        }
+        
+        .player-cover__img {
+            width: 100%;
+            height: auto;
+            max-width: 350px;
+            max-height: 350px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .player-cover__img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .player-footer {
+            padding: 10px 15px 25px 15px; /* 增加底部padding，减少顶部padding */
+        }
+        
+        .player-song-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .player-song__details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .player-song__title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .player-song__artist {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+        }
+        
+        .player-song__follow {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2px 10px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .player-stats {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .player-stat {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+        
+        .player-stat svg {
+            margin-right: 5px;
+        }
+        
+        .player-progress {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            overflow: hidden; /* 防止内容溢出 */
+        }
+        
+        .player-progress__time {
+            width: 40px;
+            text-align: center;
+        }
+        
+        .player-progress__bar-container {
+            flex: 1;
+            margin: 0 10px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 1px;
+            position: relative;
+        }
+        
+        .player-progress__bar {
+            position: absolute;
+            height: 100%;
+            width: 10%;
+            background-color: #d33a31;
+            border-radius: 1px;
+        }
+        
+        .player-progress__handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #d33a31;
+            border-radius: 50%;
+            top: 50%;
+            left: 10%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .player-progress__quality {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            text-transform: uppercase;
+        }
+        
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0;
+            margin-top: 15px; /* 减少顶部margin */
+            margin-bottom: 5px; /* 添加底部margin */
+            overflow: hidden; /* 防止内容溢出 */
+        }
+        
+        .player-control-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0; /* 防止按钮被压缩 */
+        }
+        
+        .player-control-btn svg {
+            width: 24px;
+            height: 24px;
+            max-width: 24px; /* 限制图标最大尺寸 */
+            max-height: 24px;
+        }
+        
+        .player-control-btn.main {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .player-control-btn.main svg {
+            width: 24px;
+            height: 24px;
+            color: #d33a31;
+            max-width: 24px;
+            max-height: 24px;
+        }
+        
+        .player-actions {
+            display: none; /* 隐藏底部操作区 */
+        }
+        
+        .player-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://p1.music.126.net/2fgYs6QBhYpzRdL3Gi7Lrw==/109951168737480344.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(30px) brightness(0.4);
+            z-index: -1;
+            opacity: 0.5;
+        }
+        
+        .equalizer {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+        
+        .equalizer-bar {
+            width: 3px;
+            background-color: #d33a31;
+            border-radius: 2px;
+        }
+        
+        .equalizer-bar:nth-child(1) {
+            height: 8px;
+            animation: equalize 1s infinite;
+        }
+        
+        .equalizer-bar:nth-child(2) {
+            height: 16px;
+            animation: equalize 1s infinite 0.2s;
+        }
+        
+        .equalizer-bar:nth-child(3) {
+            height: 10px;
+            animation: equalize 1s infinite 0.4s;
+        }
+        
+        @keyframes equalize {
+            0% { height: 8px; }
+            50% { height: 16px; }
+            100% { height: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <!-- 背景图片 -->
+        <div class="player-background"></div>
+        
+        <!-- 播放页面 -->
+        <div class="player-page">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <div class="status-bar__time">15:34</div>
+                <div class="status-bar__icons">
+                    <i data-lucide="signal"></i>
+                    <i data-lucide="wifi"></i>
+                    <i data-lucide="battery"></i>
+                </div>
+            </div>
+            
+            <!-- 顶部栏 -->
+            <div class="player-header">
+                <div class="player-header__action" onclick="history.back()">
+                    <i data-lucide="chevron-down"></i>
+                </div>
+                <div class="player-header__info">
+                    <div class="player-header__title">私人漫游 · 默认模式</div>
+                    <div class="player-header__mode">
+                        <i data-lucide="chevron-down" style="width:12px;height:12px;"></i>
+                    </div>
+                </div>
+                <div class="player-header__action">
+                    <i data-lucide="rotate-ccw"></i>
+                </div>
+            </div>
+            
+            <!-- 封面区域 -->
+            <div class="player-cover">
+                <div class="player-cover__img">
+                    <img src="https://p1.music.126.net/2fgYs6QBhYpzRdL3Gi7Lrw==/109951168737480344.jpg" alt="歌曲封面">
+                </div>
+            </div>
+            
+            <!-- 底部控制区 -->
+            <div class="player-footer">
+                <!-- 歌曲信息 -->
+                <div class="player-song-info">
+                    <div class="player-song__details">
+                        <div class="player-song__title">送流水</div>
+                        <div class="player-song__artist">
+                            声音碎片乐队
+                            <span class="player-song__follow">关注</span>
+                        </div>
+                    </div>
+                    <div class="player-stats">
+                        <div class="player-stat">
+                            <i data-lucide="heart"></i>
+                            <span>59w+</span>
+                        </div>
+                        <div class="player-stat">
+                            <i data-lucide="message-square"></i>
+                            <span>999+</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 进度条 -->
+                <div class="player-progress">
+                    <div class="player-progress__time">00:04</div>
+                    <div class="player-progress__bar-container">
+                        <div class="player-progress__bar"></div>
+                        <div class="player-progress__handle"></div>
+                    </div>
+                    <div class="player-progress__time">04:51</div>
+                </div>
+                
+                <div class="player-progress__quality">极高</div>
+                
+                <!-- 主控制区 -->
+                <div class="player-controls">
+                    <button class="player-control-btn">
+                        <i data-lucide="repeat"></i>
+                    </button>
+                    <button class="player-control-btn">
+                        <i data-lucide="skip-back"></i>
+                    </button>
+                    <button class="player-control-btn main" id="playButton">
+                        <i data-lucide="play"></i>
+                    </button>
+                    <button class="player-control-btn">
+                        <i data-lucide="skip-forward"></i>
+                    </button>
+                    <button class="player-control-btn">
+                        <div class="equalizer">
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 初始化Lucide图标
+        lucide.createIcons();
+        
+        // 状态栏时间更新
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.querySelector('.status-bar__time').textContent = `${hours}:${minutes}`;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 60000);
+        
+        // 播放/暂停切换
+        const playButton = document.getElementById('playButton');
+        let isPlaying = false;
+        
+        playButton.addEventListener('click', () => {
+            if (isPlaying) {
+                playButton.innerHTML = '<i data-lucide="play"></i>';
+                isPlaying = false;
+            } else {
+                playButton.innerHTML = '<i data-lucide="pause"></i>';
+                isPlaying = true;
+            }
+            lucide.createIcons(); // 重新初始化图标
+        });
+    </script>
+</body>
+</html> 
